@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BASA! Reading App – Project KABULIG</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#f472b6;--blue:#38bdf8;--green:#4ade80;--yellow:#fbbf24;
+  --purple:#a78bfa;--orange:#fb923c;--bg:#fef9f0;--white:#fff;
+  --dark:#1e293b;--muted:#94a3b8;
+  --shadow:0 8px 32px rgba(56,189,248,.15),0 2px 8px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Nunito',sans-serif;
+  min-height:100vh;
+  background:linear-gradient(160deg,#e0f2fe 0%,#fdf2f8 50%,#fef9ee 100%);
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:24px 16px;
+}
+.bubble{position:fixed;border-radius:50%;opacity:0.08;pointer-events:none;animation:floatBubble linear infinite;}
+@keyframes floatBubble{0%{transform:translateY(100vh) scale(0);}100%{transform:translateY(-100px) scale(1);}}
+.container{width:100%;max-width:480px;position:relative;z-index:1;}
+.header{text-align:center;margin-bottom:28px;}
+.logo{font-family:'Fredoka One',cursive;font-size:clamp(3.5rem,12vw,5rem);color:var(--pink);text-shadow:4px 4px 0 #fde68a;line-height:1;margin-bottom:4px;}
+.logo-star{display:inline-block;animation:spin 8s linear infinite;}
+@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+.subtitle{font-size:.92rem;font-weight:700;color:#64748b;letter-spacing:1px;margin-bottom:3px;}
+.brand{font-size:.75rem;color:#94a3b8;font-weight:600;letter-spacing:.5px;}
+.brand b{color:var(--purple);}
+.card{background:white;border-radius:28px;padding:32px 28px 28px;box-shadow:var(--shadow);border:2px solid #e0f2fe;animation:cardIn .5s ease;}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.card-title{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--dark);text-align:center;margin-bottom:6px;}
+.card-desc{font-size:.82rem;color:#64748b;font-weight:600;text-align:center;margin-bottom:22px;line-height:1.5;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:.75rem;font-weight:800;color:#64748b;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.form-group input{width:100%;padding:13px 16px;border:2.5px solid #e2e8f0;border-radius:14px;font-family:'Nunito',sans-serif;font-size:.97rem;font-weight:700;color:var(--dark);background:white;outline:none;transition:border-color .2s,box-shadow .2s;}
+.form-group input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(56,189,248,.12);}
+.form-group select{width:100%;padding:13px 16px;border:2.5px solid #e2e8f0;border-radius:14px;font-family:'Nunito',sans-serif;font-size:.97rem;font-weight:700;color:var(--dark);background:white;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;}
+.form-group select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(56,189,248,.12);}
+.role-row{display:flex;gap:12px;margin-bottom:16px;}
+.role-btn{flex:1;background:white;border:2.5px solid #e2e8f0;border-radius:16px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;}
+.role-btn:hover{border-color:var(--pink);transform:translateY(-2px);}
+.role-btn.active{border-color:var(--pink);background:#fdf2f8;}
+.role-btn .r-icon{font-size:1.8rem;display:block;margin-bottom:4px;}
+.role-btn .r-name{font-weight:800;font-size:.88rem;color:var(--dark);}
+.btn-submit{width:100%;padding:15px;margin-top:6px;background:linear-gradient(135deg,var(--pink),#e879f9);color:white;border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(244,114,182,.4);transition:transform .15s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(244,114,182,.55);}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.err-msg{color:#dc2626;font-size:.83rem;font-weight:700;text-align:center;margin-top:10px;min-height:20px;}
+.success-card{text-align:center;}
+.s-emoji{font-size:4rem;display:block;margin-bottom:12px;animation:bounceIn .5s ease;}
+@keyframes bounceIn{0%{transform:scale(0);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
+.success-card h2{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--dark);margin-bottom:8px;}
+.success-card p{font-size:.92rem;color:#64748b;font-weight:600;line-height:1.6;margin-bottom:24px;}
+.btn-access{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:linear-gradient(135deg,var(--blue),var(--purple));color:white;border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;cursor:pointer;text-decoration:none;box-shadow:0 6px 20px rgba(56,189,248,.4);transition:transform .15s,box-shadow .15s;animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 6px 20px rgba(56,189,248,.4);}50%{box-shadow:0 6px 32px rgba(56,189,248,.7);}}
+.btn-access:hover{transform:translateY(-2px);}
+.how-to{background:linear-gradient(135deg,#f0fdf4,#eff6ff);border:2px solid #bbf7d0;border-radius:16px;padding:14px 16px;margin-top:20px;}
+.how-to-title{font-size:.72rem;font-weight:800;letter-spacing:2px;color:#059669;text-transform:uppercase;margin-bottom:10px;}
+.how-to ol{padding-left:18px;}
+.how-to li{font-size:.82rem;font-weight:700;color:#374151;margin-bottom:5px;line-height:1.5;}
+.how-to li b{color:var(--blue);}
+.note{font-size:.74rem;color:#94a3b8;font-weight:600;margin-top:8px;line-height:1.5;}
+.note b{color:var(--orange);}
+.spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;display:none;}
+.footer{margin-top:20px;font-size:.72rem;color:#cbd5e1;font-weight:600;text-align:center;letter-spacing:.5px;}
+.footer b{color:var(--purple);}
+</style>
+</head>
+<body>
+
+<script>
+['#f472b6','#38bdf8','#4ade80','#fbbf24','#a78bfa','#fb923c'].forEach(function(c){
+  var b=document.createElement('div');b.className='bubble';
+  var size=40+Math.random()*80;
+  b.style.cssText='width:'+size+'px;height:'+size+'px;background:'+c+';left:'+(Math.random()*100)+'vw;animation-duration:'+(8+Math.random()*12)+'s;animation-delay:'+(Math.random()*5)+'s;';
+  document.body.appendChild(b);
+});
+</script>
+
+<div class="container">
+  <div class="header">
+    <div class="logo"><span class="logo-star">🌟</span> BASA!</div>
+    <div class="subtitle">Read Aloud Practice App</div>
+    <div class="brand"><b>Project KABULIG</b> &middot; Developed by Sir Dyon &middot; SDO Romblon</div>
+  </div>
+
+  <!-- Registration Card -->
+  <div class="card" id="regCard">
+    <div class="card-title">📋 Register to Access</div>
+    <div class="card-desc">Please fill in your information before downloading the app.</div>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="fname" placeholder="Enter your full name" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>School</label>
+      <input type="text" id="school" placeholder="Enter your school name" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>District</label>
+      <select id="district">
+        <option value="">-- Piliin ang Distrito --</option>
+        <option value="Alcantara">Alcantara</option>
+        <option value="Banton">Banton</option>
+        <option value="Cajidiocan-Magdiwang">Cajidiocan-Magdiwang</option>
+        <option value="Concepcion">Concepcion</option>
+        <option value="Corcuera">Corcuera</option>
+        <option value="Looc">Looc</option>
+        <option value="Odiongan North">Odiongan North</option>
+        <option value="Odiongan South">Odiongan South</option>
+        <option value="Romblon">Romblon</option>
+        <option value="San Agustin-Santa Maria-Calatrava">San Agustin-Santa Maria-Calatrava</option>
+        <option value="San Andres">San Andres</option>
+        <option value="San Fernando">San Fernando</option>
+        <option value="San Jose-Santa Fe">San Jose-Santa Fe</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Grade Level</label>
+      <input type="text" id="grade" placeholder="e.g. Grade 3, Teacher" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>I am a...</label>
+      <div class="role-row">
+        <div class="role-btn active" id="roleStudent" onclick="selectRole('Student',this)">
+          <span class="r-icon">🎒</span>
+          <span class="r-name">Student</span>
+        </div>
+        <div class="role-btn" id="roleTeacher" onclick="selectRole('Teacher',this)">
+          <span class="r-icon">👩‍🏫</span>
+          <span class="r-name">Teacher</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+      <span id="btnText">Access the App 🚀</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+    <div class="err-msg" id="errMsg"></div>
+
+    <div class="how-to">
+      <div class="how-to-title">📖 How to Use</div>
+      <ol>
+        <li>Fill in your information above and click <b>Access the App</b></li>
+        <li>Click the Google Drive link to open the app folder</li>
+        <li>Download the app file to your device</li>
+        <li>Open the downloaded file using <b>Google Chrome</b></li>
+        <li>Allow microphone access when prompted 🎤</li>
+      </ol>
+      <div class="note"><b>⚠️ Important:</b> Works best on <b>laptop or desktop</b> using Google Chrome.</div>
+    </div>
+  </div>
+
+  <!-- Success Card -->
+  <div class="card" id="successCard" style="display:none;">
+    <div class="success-card">
+      <span class="s-emoji">🎉</span>
+      <h2>You're All Set!</h2>
+      <p>Thank you for registering! Click the button below to access the BASA! Reading Apps on Google Drive.</p>
+      <a href="https://tinyurl.com/ReadingAppv1" target="_blank" class="btn-access">
+        📂 Open App Folder
+      </a>
+      <div class="how-to" style="margin-top:20px;text-align:left;">
+        <div class="how-to-title">📖 Next Steps</div>
+        <ol>
+          <li>Download the app file from Google Drive</li>
+          <li>Open the file using <b>Google Chrome</b></li>
+          <li>Allow microphone access when prompted 🎤</li>
+          <li>Start reading! 📚</li>
+        </ol>
+        <div class="note"><b>⚠️ Best on laptop/desktop</b> using Google Chrome.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <b>Project KABULIG</b> &middot; SDO Romblon &middot; Region IV-B MIMAROPA<br>
+    Curriculum Implementation Division
+  </div>
+</div>
+
+<script>
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzt1jIoAnGjQ6rB92vfgEiE2n4_dBNqWbGhNCotCNNoUHczbyw-21EtZ1THlYSLaaTP/exec';
+var currentRole = 'Student';
+
+function selectRole(role, el){
+  currentRole = role;
+  document.querySelectorAll('.role-btn').forEach(function(b){ b.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+function submitForm(){
+  var errEl = document.getElementById('errMsg');
+  errEl.textContent = '';
+
+  var name   = document.getElementById('fname').value.trim();
+  var school = document.getElementById('school').value.trim();
+  var dist   = document.getElementById('district').value.trim();
+  var grade  = document.getElementById('grade').value.trim();
+
+  if(!name)  { errEl.textContent = '⚠️ Please enter your full name.'; return; }
+  if(!school){ errEl.textContent = '⚠️ Please enter your school name.'; return; }
+  if(!dist)  { errEl.textContent = '⚠️ Please select your district.'; return; }
+  if(!grade) { errEl.textContent = '⚠️ Please enter your grade level.'; return; }
+
+  var btn     = document.getElementById('submitBtn');
+  var spinner = document.getElementById('spinner');
+  var btnText = document.getElementById('btnText');
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  btnText.textContent = 'Submitting...';
+
+  // Use URLSearchParams — no custom headers, avoids CORS preflight issue with Apps Script
+  var params = new URLSearchParams();
+  params.append('name', name);
+  params.append('school', school);
+  params.append('district', dist);
+  params.append('grade', grade);
+  params.append('role', currentRole);
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: params
+  })
+  .then(function(){ showSuccess(); })
+  .catch(function(){ showSuccess(); }); // show success even if network hiccups
+}
+
+function showSuccess(){
+  document.getElementById('regCard').style.display = 'none';
+  document.getElementById('successCard').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>
